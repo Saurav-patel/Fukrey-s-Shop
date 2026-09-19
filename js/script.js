@@ -1,83 +1,72 @@
-/* =========================================================
-   FUKREY — MAIN JAVASCRIPT
-   ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
-
-    /* =====================================================
-       MOBILE NAVIGATION
-       ===================================================== */
-
-    const menuToggle = document.querySelector(".menu-toggle");
+const menuToggle = document.querySelector(".menu-toggle");
     const mobileMenu = document.querySelector("#mobile-menu");
 
     if (menuToggle && mobileMenu) {
+
+        const closeMenu = () => {
+            menuToggle.setAttribute("aria-expanded", "false");
+            menuToggle.classList.remove("active");
+            mobileMenu.classList.remove("open");
+        };
+
+
+        const openMenu = () => {
+            menuToggle.setAttribute("aria-expanded", "true");
+            menuToggle.classList.add("active");
+            mobileMenu.classList.add("open");
+        };
+
 
         menuToggle.addEventListener("click", () => {
 
             const isOpen =
                 menuToggle.getAttribute("aria-expanded") === "true";
 
-            menuToggle.setAttribute(
-                "aria-expanded",
-                String(!isOpen)
-            );
+            if (isOpen) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
 
-            menuToggle.classList.toggle("active", !isOpen);
-            mobileMenu.classList.toggle("open");
         });
-
-
-        /*
-         * Close mobile menu when a navigation link
-         * is selected.
-         */
-
-        const mobileLinks =
+const mobileLinks =
             mobileMenu.querySelectorAll("a");
 
         mobileLinks.forEach((link) => {
 
             link.addEventListener("click", () => {
-
-                menuToggle.setAttribute(
-                    "aria-expanded",
-                    "false"
-                );
-
-                menuToggle.classList.remove("active");
-                mobileMenu.classList.remove("open");
+                closeMenu();
             });
 
         });
-
-
-        /*
-         * Close menu with Escape.
-         */
-
-        document.addEventListener("keydown", (event) => {
+document.addEventListener("keydown", (event) => {
 
             if (event.key === "Escape") {
-
-                menuToggle.setAttribute(
-                    "aria-expanded",
-                    "false"
-                );
-
-                menuToggle.classList.remove("active");
-                mobileMenu.classList.remove("open");
+                closeMenu();
             }
 
         });
+document.addEventListener("click", (event) => {
+
+            const clickedInsideMenu =
+                mobileMenu.contains(event.target);
+
+            const clickedToggle =
+                menuToggle.contains(event.target);
+
+            if (
+                !clickedInsideMenu &&
+                !clickedToggle
+            ) {
+                closeMenu();
+            }
+
+        });
+
     }
-
-
-    /* =====================================================
-       BRANCH SLIDER
-       ===================================================== */
-
-    const branchTrack =
+const branchTrack =
         document.querySelector(".branch-track");
 
     const branchCards =
@@ -89,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const nextButton =
         document.querySelector(".slider-next");
 
-    const dots =
+    const branchDots =
         document.querySelectorAll(".slider-dot");
 
 
@@ -101,14 +90,19 @@ document.addEventListener("DOMContentLoaded", () => {
     ) {
 
         let currentIndex = 0;
+const updateBranchDots = () => {
 
+            branchDots.forEach((dot, index) => {
 
-        /*
-         * Calculate the correct scroll position
-         * for a particular card.
-         */
+                dot.classList.toggle(
+                    "active",
+                    index === currentIndex
+                );
 
-        const goToBranch = (index) => {
+            });
+
+        };
+const goToBranch = (index) => {
 
             if (index < 0) {
                 index = branchCards.length - 1;
@@ -120,77 +114,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
             currentIndex = index;
 
-            const card = branchCards[currentIndex];
+            const card =
+                branchCards[currentIndex];
+
+            if (!card) {
+                return;
+            }
 
             branchTrack.scrollTo({
                 left: card.offsetLeft,
                 behavior: "smooth"
             });
 
-            updateDots();
+            updateBranchDots();
+
         };
-
-
-        /*
-         * Update active slider indicator.
-         */
-
-        const updateDots = () => {
-
-            dots.forEach((dot, index) => {
-
-                dot.classList.toggle(
-                    "active",
-                    index === currentIndex
-                );
-
-            });
-        };
-
-
-        /*
-         * Previous branch.
-         */
-
-        previousButton.addEventListener(
+previousButton.addEventListener(
             "click",
             () => {
                 goToBranch(currentIndex - 1);
             }
         );
-
-
-        /*
-         * Next branch.
-         */
-
-        nextButton.addEventListener(
+nextButton.addEventListener(
             "click",
             () => {
                 goToBranch(currentIndex + 1);
             }
         );
+branchDots.forEach((dot, index) => {
 
-
-        /*
-         * Dot navigation.
-         */
-
-        dots.forEach((dot, index) => {
-
-            dot.addEventListener("click", () => {
-                goToBranch(index);
-            });
+            dot.addEventListener(
+                "click",
+                () => {
+                    goToBranch(index);
+                }
+            );
 
         });
-
-
-        /*
-         * Update the active dot when the user
-         * manually swipes the carousel.
-         */
-
-        let scrollTimeout;
+let scrollTimeout = null;
 
         branchTrack.addEventListener(
             "scroll",
@@ -216,47 +177,48 @@ document.addEventListener("DOMContentLoaded", () => {
                                 distance <
                                 smallestDistance
                             ) {
-                                smallestDistance = distance;
-                                closestIndex = index;
+
+                                smallestDistance =
+                                    distance;
+
+                                closestIndex =
+                                    index;
+
                             }
 
                         }
                     );
 
-                    currentIndex = closestIndex;
-                    updateDots();
+                    currentIndex =
+                        closestIndex;
 
-                }, 80);
+                    updateBranchDots();
+
+                }, 100);
 
             },
-            { passive: true }
+            {
+                passive: true
+            }
         );
 
     }
+const revealElements =
+        document.querySelectorAll(
+            [
+                ".section-heading",
+                ".category-card",
+                ".footwear-card",
+                ".branches-layout",
+                ".contact-container"
+            ].join(", ")
+        );
 
-
-    /* =====================================================
-       SCROLL REVEAL
-       ===================================================== */
-
-    const revealElements = document.querySelectorAll(
-        ".section-heading, .category-card, .branches-layout, .contact-container"
-    );
-
-
-    /*
-     * Add reveal class to elements.
-     */
 
     revealElements.forEach((element) => {
         element.classList.add("reveal");
     });
 
-
-    /*
-     * IntersectionObserver is much more efficient
-     * than listening to scroll events continuously.
-     */
 
     if ("IntersectionObserver" in window) {
 
@@ -266,7 +228,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     entries.forEach((entry) => {
 
-                        if (entry.isIntersecting) {
+                        if (
+                            entry.isIntersecting
+                        ) {
 
                             entry.target.classList.add(
                                 "visible"
@@ -275,6 +239,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             observer.unobserve(
                                 entry.target
                             );
+
                         }
 
                     });
@@ -282,33 +247,34 @@ document.addEventListener("DOMContentLoaded", () => {
                 },
                 {
                     threshold: 0.12,
-                    rootMargin: "0px 0px -50px 0px"
+
+                    rootMargin:
+                        "0px 0px -45px 0px"
                 }
             );
 
 
         revealElements.forEach((element) => {
+
             revealObserver.observe(element);
+
         });
 
     } else {
 
-        /*
-         * Fallback for older browsers.
-         */
-
         revealElements.forEach((element) => {
-            element.classList.add("visible");
+
+            element.classList.add(
+                "visible"
+            );
+
         });
+
     }
-
-
-    /* =====================================================
-       CATEGORY CARD MICRO-INTERACTION
-       ===================================================== */
-
-    const categoryCards =
-        document.querySelectorAll(".category-card");
+const categoryCards =
+        document.querySelectorAll(
+            ".category-card, .footwear-card"
+        );
 
 
     categoryCards.forEach((card) => {
@@ -316,53 +282,174 @@ document.addEventListener("DOMContentLoaded", () => {
         card.addEventListener(
             "mouseenter",
             () => {
-                card.classList.add("is-hovered");
+
+                card.classList.add(
+                    "is-hovered"
+                );
+
             }
         );
+
 
         card.addEventListener(
             "mouseleave",
             () => {
-                card.classList.remove("is-hovered");
+
+                card.classList.remove(
+                    "is-hovered"
+                );
+
             }
         );
 
     });
-
-
-    /* =====================================================
-       HEADER SCROLL EFFECT
-       ===================================================== */
-
-    const header =
+const header =
         document.querySelector(".site-header");
 
 
     if (header) {
 
-        let lastScrollY = window.scrollY;
+        const updateHeader =
+            () => {
+
+                if (window.scrollY > 30) {
+
+                    header.classList.add(
+                        "scrolled"
+                    );
+
+                } else {
+
+                    header.classList.remove(
+                        "scrolled"
+                    );
+
+                }
+
+            };
+
+
+        updateHeader();
+
 
         window.addEventListener(
             "scroll",
-            () => {
-
-                const currentScrollY =
-                    window.scrollY;
-
-
-                if (currentScrollY > 30) {
-                    header.classList.add("scrolled");
-                } else {
-                    header.classList.remove("scrolled");
-                }
-
-
-                lastScrollY = currentScrollY;
-
-            },
-            { passive: true }
+            updateHeader,
+            {
+                passive: true
+            }
         );
 
     }
+const navigationLinks =
+        document.querySelectorAll(
+            '.desktop-nav a, .mobile-nav a'
+        );
+
+
+    const sections =
+        document.querySelectorAll(
+            "#mens-wear, #footwear, #branches, #contact"
+        );
+
+
+    if (
+        navigationLinks.length &&
+        sections.length &&
+        "IntersectionObserver" in window
+    ) {
+
+        const sectionObserver =
+            new IntersectionObserver(
+                (entries) => {
+
+                    entries.forEach((entry) => {
+
+                        if (
+                            !entry.isIntersecting
+                        ) {
+                            return;
+                        }
+
+                        const id =
+                            entry.target.id;
+
+                        navigationLinks.forEach(
+                            (link) => {
+
+                                const href =
+                                    link.getAttribute(
+                                        "href"
+                                    );
+
+                                link.classList.toggle(
+                                    "active",
+                                    href === `#${id}`
+                                );
+
+                            }
+                        );
+
+                    });
+
+                },
+                {
+                    threshold: 0.35
+                }
+            );
+
+
+        sections.forEach((section) => {
+
+            sectionObserver.observe(section);
+
+        });
+
+    }
+const lazyImages =
+        document.querySelectorAll(
+            'img[loading="lazy"]'
+        );
+
+
+    lazyImages.forEach((image) => {
+
+        image.addEventListener(
+            "error",
+            () => {
+
+                image.classList.add(
+                    "image-error"
+                );
+
+            }
+        );
+
+    });
+document.addEventListener(
+        "keydown",
+        (event) => {
+
+            if (
+                event.key === "ArrowLeft" &&
+                document.activeElement === heroPrevious
+            ) {
+
+                heroPrevious?.click();
+
+            }
+
+
+            if (
+                event.key === "ArrowRight" &&
+                document.activeElement === heroNext
+            ) {
+
+                heroNext?.click();
+
+            }
+
+        }
+    );
 
 });
