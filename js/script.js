@@ -1,4 +1,4 @@
-
+﻿
 document.addEventListener("DOMContentLoaded", () => {
 const menuToggle = document.querySelector(".menu-toggle");
     const mobileMenu = document.querySelector("#mobile-menu");

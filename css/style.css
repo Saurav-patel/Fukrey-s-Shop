@@ -1,4 +1,4 @@
-
+﻿
 
 :root {
     --bg: #060707;
@@ -763,7 +763,7 @@ ul {
     transform: scale(1.07);
 }
 
-/* Image framing — tuned per category so the clothing stays visible */
+
 .mens-category-grid .category-card:nth-child(1) .category-image img {
     object-position: center 42%;
 }
@@ -904,7 +904,7 @@ ul {
     transform: scale(1.08);
 }
 
-/* Keep footwear subjects centered inside editorial cards */
+
 .footwear-card:nth-child(1) .footwear-image img,
 .footwear-card:nth-child(3) .footwear-image img,
 .footwear-card:nth-child(4) .footwear-image img {
@@ -1292,7 +1292,7 @@ button:focus-visible {
 }
 @media (max-width: 599px) {
 
-    /* On narrow screens, give the source photo a little more breathing room. */
+    
     .mens-category-grid .category-card {
         min-height: 430px;
     }
@@ -1577,10 +1577,7 @@ button:focus-visible {
 }
 
 
-/* =========================================
-   TWO ANIMATED BRANCH MAPS
-   Added without changing the existing theme
-========================================= */
+
 
 .branch-maps {
     display: grid;
