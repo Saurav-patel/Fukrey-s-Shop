@@ -1575,3 +1575,179 @@ button:focus-visible {
         transform: none;
     }
 }
+
+
+/* =========================================
+   TWO ANIMATED BRANCH MAPS
+   Added without changing the existing theme
+========================================= */
+
+.branch-maps {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    min-width: 0;
+    padding: 14px;
+    background: var(--surface);
+}
+
+.branch-map-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-md);
+    background: var(--bg-soft);
+    isolation: isolate;
+    animation: branchMapReveal 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    transition:
+        transform var(--transition),
+        border-color var(--transition),
+        box-shadow var(--transition);
+}
+
+.branch-map-card:nth-child(2) {
+    animation-delay: 120ms;
+}
+
+.branch-map-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--border);
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.32);
+}
+
+.branch-map-heading {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 17px 16px 14px;
+    border-bottom: 1px solid var(--border-soft);
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.035),
+            transparent
+        );
+}
+
+.branch-map-heading h3 {
+    color: var(--text);
+    font-size: 0.92rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+}
+
+.branch-map-heading p {
+    color: var(--text-muted);
+    font-size: 0.65rem;
+    line-height: 1.5;
+}
+
+.branch-map-card iframe {
+    width: 100%;
+    height: 285px;
+    min-height: 285px;
+    flex: 0 0 auto;
+    display: block;
+    border: 0;
+    filter:
+        grayscale(0.8)
+        contrast(1.08)
+        brightness(0.72);
+    transform: scale(1.001);
+    transform-origin: center;
+    transition:
+        filter 700ms ease,
+        transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.branch-map-card:hover iframe {
+    filter:
+        grayscale(0.15)
+        contrast(1.05)
+        brightness(0.88);
+    transform: scale(1.035);
+}
+
+.branch-map-card .map-button {
+    position: static;
+    align-self: flex-start;
+    width: fit-content;
+    margin: 14px 16px 16px;
+    padding: 9px 13px;
+}
+
+@keyframes branchMapReveal {
+    from {
+        opacity: 0;
+        transform: translateY(22px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (min-width: 600px) {
+    .branch-maps {
+        padding: 16px;
+    }
+
+    .branch-map-card iframe {
+        height: 300px;
+        min-height: 300px;
+    }
+}
+
+@media (min-width: 900px) {
+    .branch-maps {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        padding: 16px;
+    }
+
+    .branch-map-card iframe {
+        height: 300px;
+        min-height: 300px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .branch-maps {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: stretch;
+    }
+}
+
+@media (max-width: 599px) {
+    .branch-maps {
+        padding: 10px;
+        gap: 12px;
+    }
+
+    .branch-map-card iframe {
+        height: 260px;
+        min-height: 260px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .branch-map-card,
+    .branch-map-card iframe {
+        animation: none;
+        transition: none;
+    }
+
+    .branch-map-card:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+    .branch-map-card:hover iframe {
+        transform: none;
+    }
+}
